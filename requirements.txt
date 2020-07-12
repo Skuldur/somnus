@@ -1,0 +1,9 @@
+matplotlib
+numpy
+pydub
+pyaudio
+scipy
+librosa
+tensorflow
+fire
+tqdm
