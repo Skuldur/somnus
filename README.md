@@ -1,6 +1,6 @@
 # Somnus
 
-Somnus allows you to listen for and detect a specific keyword in a continuous stream of audio data. It uses small-footprint keyword detection models written in Tensorflow 2.0 to detect instances of the keyword and by using small-footprint models Somnus keeps memory usage low and latency to a minimum.
+Somnus allows you to listen for and detect a specific keyword in a continuous stream of audio data. It uses keyword detection models written in Tensorflow 2.0 to detect instances of the keyword and by using small-footprint models Somnus keeps memory usage low and latency to a minimum.
 
 ## Getting started
 
@@ -30,15 +30,15 @@ Somnus can handle all the audio interfacing for you so that you only need to ini
 
 Somnus has the following parameters:
 
-* keyword_file_path: The relative or absolute path to a weights file for the keyword model.
-* model (default: 'cnn-one-stride'): The name of the model you wish to use.
-* device_index (default: 0): The device index of the microphone that Somnus should listen to.
-* threshold (default: 0.9): A threshold for how confident Somnus has to be for it to detect the keyword
-* data_shape (default: (101 40 1)): The input shape for the keyword model
-* sample_duration (default: 1): How long the input of the keyword model should be in seconds
-* n_filters (default: 40): The number of filters in each frame
-* win_length (default: 400): The length of each window in frames
-* win_hop (default: 160): the number of frames between the starting frame of each consecutive window.
+* **keyword_file_path**: The relative or absolute path to a weights file for the keyword model.
+* **model (default: 'cnn-one-stride')**: The name of the model you wish to use.
+* **device_index (default: 0)**: The device index of the microphone that Somnus should listen to.
+* **threshold (default: 0.9)**: A threshold for how confident Somnus has to be for it to detect the keyword
+* **data_shape (default: (101 40 1))**: The input shape for the keyword model
+* **sample_duration (default: 1)**: How long the input of the keyword model should be in seconds
+* **n_filters (default: 40)**: The number of filters in each frame
+* **win_length (default: 400)**: The length of each window in frames
+* **win_hop (default: 160)**: the number of frames between the starting frame of each consecutive window.
 
 #### Example
 
@@ -64,11 +64,11 @@ The command to generate an audio dataset takes the raw audio in `./raw_data/` as
 
 The command has the following options: 
 
-* duration: The duration of the audio clips in seconds
-* n_positive: The number of positive examples
-* n_bgtalk: The number of examples using negative background speech
-* n_negative: The number of negative examples
-* n_silent: The number of examples containing only background noise
+* **duration**: The duration of the audio clips in seconds
+* **n_positive**: The number of positive examples
+* **n_bgtalk**: The number of examples using negative background speech
+* **n_negative**: The number of negative examples
+* **n_silent**: The number of examples containing only background noise
 
 #### Preprocessing and creating the dataset
 ```bash
@@ -79,10 +79,10 @@ The command to preprocess the augmented audio files. It takes the files stored i
 
 The command has the following options: 
 
-* n_filters: The number of filters in each frame
-* show_progress: Boolean option to decide whether to show a progress bar (NOTE: showing progress bar may slow down processing)
-* win_length: The length of each window in frames
-* win_hop: the number of frames between the starting frame of each consecutive window.
+* **n_filters**: The number of filters in each frame
+* **show_progress**: Boolean option to decide whether to show a progress bar (NOTE: showing progress bar may slow down processing)
+* **win_length**: The length of each window in frames
+* **win_hop**: the number of frames between the starting frame of each consecutive window.
 
 #### Training
 
@@ -94,12 +94,12 @@ The command to train a small-footprint keyword model loads the data in `./prepro
 
 The command has the following options:
 
-* model: The name of the model we want to train
-* train_split: How much data should be in the training set. Valid values are [0.0, 1.0]
-* n_epochs: The number of epochs
-* weights_file: The name of the file the final weights should be saved to
-* save_best: Whether or not the model should save the best model throughout the training process
-* batch_size: The size of each mini batch
+* **model**: The name of the model we want to train
+* **train_split**: How much data should be in the training set. Valid values are [0.0, 1.0]
+* **n_epochs**: The number of epochs
+* **weights_file**: The name of the file the final weights should be saved to
+* **save_best**: Whether or not the model should save the best model throughout the training process
+* **batch_size**: The size of each mini batch
 
 ## Models
 
