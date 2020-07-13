@@ -101,6 +101,15 @@ The command has the following options:
 * save_best: Whether or not the model should save the best model throughout the training process
 * batch_size: The size of each mini batch
 
+## Models
+
+Currently Somnus offers the choice between the following models:
+
+| Name           | Source                                                                                                                                                          | Description                                                                     | Size (total parameters) | Size (MB) |
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|-------------------------|-----------|
+| cnn-one-stride | [Convolutional Neural Networks for Small-footprint Keyword Spotting](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43969.pdf) | A frequency strided convolutional model with a stride of 4 and no pooling       | 649k                    | 2.5MB     |
+| cnn-trad-pool  | [Convolutional Neural Networks for Small-footprint Keyword Spotting](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43969.pdf) | A keyword detection model with two convolutional layers followed by max pooling | 381k                    | 1.5MB     |
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
