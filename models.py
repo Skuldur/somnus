@@ -101,6 +101,7 @@ class CnnOneFStride(BaseModel):
         opt = Adam(lr=0.0001)
         self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"]) 
 
+
 class CrnnTimeStride(BaseModel):
     def __init__(self, input_shape):
         """
@@ -124,6 +125,7 @@ class CrnnTimeStride(BaseModel):
 
         opt = Adam(lr=0.0001)
         self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"])
+
 
 class CrnnFreqStride(BaseModel):
     def __init__(self, input_shape):
