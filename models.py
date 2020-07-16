@@ -137,7 +137,7 @@ class CrnnFreqStride(BaseModel):
         
         X_input = Input(shape = input_shape)
 
-        conv1 = Conv2D(32, kernel_size=(20, 5), strides=(2,8), padding='same', activation='relu')(X_input)
+        conv1 = Conv2D(32, kernel_size=(5, 20), strides=(2,8), padding='same', activation='relu')(X_input)
         bigru1 = TimeDistributed(Bidirectional(GRU(units=32, return_sequences=True)))(conv1)
         bigru2 = TimeDistributed(Bidirectional(GRU(units=32)))(bigru1)
         flatten = Flatten()(bigru2)
