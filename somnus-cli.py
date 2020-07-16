@@ -2,13 +2,9 @@ import fire
 import numpy as np
 from tqdm import tqdm
 
-from utils import load_raw_audio
-from utils import create_positive_example
-from utils import create_negative_example
-from utils import create_silent_example
+from utils import load_raw_audio, create_positive_example, create_negative_example, create_silent_example
 from preprocess_audio import create_dataset
-from models import CnnOneFStride
-from models import CnnTradFPool
+from models import CnnOneFStride, CnnTradFPool, CrnnTimeStride, CrnnFreqStride
 
 
 class SomnusCLI():
@@ -91,6 +87,10 @@ class SomnusCLI():
             model = CnnOneFStride(input_shape=shape)
         elif model == 'cnn-trad-pool':
             model = CnnTradFPool(input_shape=shape)
+        elif model == 'crnn-time-stride':
+            model = CrnnTimeStride(input_shape=shape)
+        elif model == 'crnn-freq-stride':
+            model = CrnnFreqStride(input_shape=shape)
         else:
             raise ValueError("Model type %s not supported" % model)
 
@@ -103,7 +103,6 @@ class SomnusCLI():
 
         model.train(train_data[:split], train_labels[:split], train_data[split:], train_labels[split:], n_epochs, save_best, batch_size)
         model.save(weights_file)
-
 
 if __name__ == '__main__':
   fire.Fire(SomnusCLI)

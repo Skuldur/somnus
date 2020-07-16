@@ -1,5 +1,5 @@
 import numpy as np
-from tensorflow.keras.layers import Dense, GRU, LSTM, Input, Dropout, MaxPooling2D, Conv1D, Conv2D, BatchNormalization, Activation, Flatten, TimeDistributed
+from tensorflow.keras.layers import Dense, GRU, Bidirectional, Input, Dropout, MaxPooling2D, Conv2D, Flatten, TimeDistributed
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
@@ -56,13 +56,10 @@ class CnnTradFPool(BaseModel):
         
         Argument:
             input_shape: shape of the model's input data (using Keras conventions)
-
-        Returns:
-            model: Keras model instance
         """
         self.filepath = "cnn-trad-f-pool-{epoch:02d}-{loss:.4f}.hdf5"
         
-        X_input = Input(shape = input_shape, name='yaaaas')
+        X_input = Input(shape = input_shape)
 
         conv1 = Conv2D(64, kernel_size=(66, 8), strides=1, padding='same', activation='relu')(X_input)
         drop1 = Dropout(0.2)(conv1)
@@ -86,13 +83,10 @@ class CnnOneFStride(BaseModel):
         
         Argument:
         input_shape: shape of the model's input data (using Keras conventions)
-
-        Returns:
-            model: Keras model instance
         """
         self.filepath = "cnn-one-f-stride-{epoch:02d}-{loss:.4f}.hdf5"
 
-        X_input = Input(shape = input_shape, name='yaaaas')
+        X_input = Input(shape = input_shape)
 
         conv1 = Conv2D(186, kernel_size=(101, 8), strides=(1,4), padding='valid', activation='relu')(X_input)
         drop1 = Dropout(0.2)(conv1)
@@ -103,6 +97,55 @@ class CnnOneFStride(BaseModel):
         dense = Dense(3, activation='softmax')(dense)
 
         self.model = Model(inputs = X_input, outputs = dense)
+
         opt = Adam(lr=0.0001)
         self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"]) 
+
+class CrnnTimeStride(BaseModel):
+    def __init__(self, input_shape):
+        """
+        Function creating the model's graph in Keras.
+        
+        Argument:
+            input_shape: shape of the model's input data (using Keras conventions)
+        """
+        self.filepath = "crnn-time-stride-{epoch:02d}-{loss:.4f}.hdf5"
+        
+        X_input = Input(shape = input_shape)
+
+        conv1 = Conv2D(32, kernel_size=(20, 5), strides=(8,2), padding='same', activation='relu')(X_input)
+        bigru1 = TimeDistributed(Bidirectional(GRU(units=32, return_sequences=True)))(conv1)
+        bigru2 = TimeDistributed(Bidirectional(GRU(units=32)))(bigru1)
+        flatten = Flatten()(bigru2)
+        dense1 = Dense(64, activation='relu')(flatten)
+        output = Dense(3, activation='softmax')(dense1)
+
+        self.model = Model(inputs = X_input, outputs = output)
+
+        opt = Adam(lr=0.0001)
+        self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"])
+
+class CrnnFreqStride(BaseModel):
+    def __init__(self, input_shape):
+        """
+        Function creating the model's graph in Keras.
+        
+        Argument:
+            input_shape: shape of the model's input data (using Keras conventions)
+        """
+        self.filepath = "crnn-freq-stride-{epoch:02d}-{loss:.4f}.hdf5"
+        
+        X_input = Input(shape = input_shape)
+
+        conv1 = Conv2D(32, kernel_size=(20, 5), strides=(2,8), padding='same', activation='relu')(X_input)
+        bigru1 = TimeDistributed(Bidirectional(GRU(units=32, return_sequences=True)))(conv1)
+        bigru2 = TimeDistributed(Bidirectional(GRU(units=32)))(bigru1)
+        flatten = Flatten()(bigru2)
+        dense1 = Dense(64, activation='relu')(flatten)
+        output = Dense(3, activation='softmax')(dense1)
+
+        self.model = Model(inputs = X_input, outputs = output)
+
+        opt = Adam(lr=0.0001)
+        self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"])
 

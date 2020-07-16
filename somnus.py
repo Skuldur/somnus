@@ -5,7 +5,7 @@ import sys
 import time
 import numpy as np
 
-from models import CnnOneFStride, CnnTradFPool
+from models import CnnOneFStride, CnnTradFPool, CrnnTimeStride, CrnnFreqStride
 from preprocess_audio import melnormalize
 
 
@@ -22,13 +22,12 @@ class Somnus():
         win_length (int): The length of each window in frames
         win_hop (int): the number of frames between the starting frame of each consecutive window.
     """
-
     def __init__(
             self, 
             keyword_file_path,
             model='cnn-one-stride',
             device_index=0, 
-            threshold=0.7, 
+            threshold=0.9, 
             data_shape=(101, 40, 1), 
             sample_duration=1.,
             n_filters=40,
@@ -46,6 +45,10 @@ class Somnus():
             self.model = CnnOneFStride(input_shape=data_shape)
         elif model == 'cnn-trad-pool':
             self.model = CnnTradFPool(input_shape=data_shape)
+        elif model == 'crnn-time-stride':
+            self.model = CrnnTimeStride(input_shape=data_shape)
+        elif model == 'crnn-freq-stride':
+            self.model = CrnnFreqStride(input_shape=data_shape)
         else:
             raise ValueError("Model type %s not supported" % model)
         self.model.load(keyword_file_path)
@@ -126,7 +129,7 @@ class Somnus():
 
     def detect_keyword(self, audio_stream):
         """
-        Melnormalizes the audio_stream argument and detects whether or not it contains the key word
+        Normalizes the audio_stream argument and detects whether or not it contains the key word
 
         Args:
             audio_stream (array): An audio time series
@@ -145,4 +148,4 @@ class Somnus():
                 return True
 
         # if it's not detected then we return False
-        return False        
+        return False

@@ -64,7 +64,7 @@ def create_dataset(n_filters, show_progress, win_length, win_hop):
 
 def melnormalize(audio_time_series, n_filters, win_length, win_hop):
     """
-    Melnormalize and expand a audio time series.
+    Normalize and expand a audio time series.
 
     Args:
         audio_time_series (array): An audio time series
