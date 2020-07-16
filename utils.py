@@ -15,7 +15,7 @@ def load_raw_audio(length=1):
     negatives = []
     background_talking = []
 
-    # 10 second base
+    # 1 second base
     base = AudioSegment.silent(duration=length * 1000)
     for filename in glob.iglob('./raw_data/positives/*.wav'):
         activate = AudioSegment.from_wav(filename).set_channels(1)
