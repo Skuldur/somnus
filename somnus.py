@@ -5,7 +5,7 @@ import sys
 import time
 import numpy as np
 
-from models import CnnOneFStride, CnnTradFPool, CrnnTimeStride, CrnnFreqStride
+from models import get_model
 from preprocess_audio import melnormalize
 
 
@@ -25,7 +25,7 @@ class Somnus():
     def __init__(
             self, 
             keyword_file_path,
-            model='cnn-one-stride',
+            model_name='cnn-one-stride',
             device_index=0, 
             threshold=0.9, 
             data_shape=(101, 40, 1), 
@@ -41,16 +41,7 @@ class Somnus():
         # Each model input data duration in seconds, need to be an integer numbers of chunk_duration
         self.feed_samples = int(self.fs * sample_duration)
 
-        if model == 'cnn-one-stride':
-            self.model = CnnOneFStride(input_shape=data_shape)
-        elif model == 'cnn-trad-pool':
-            self.model = CnnTradFPool(input_shape=data_shape)
-        elif model == 'crnn-time-stride':
-            self.model = CrnnTimeStride(input_shape=data_shape)
-        elif model == 'crnn-freq-stride':
-            self.model = CrnnFreqStride(input_shape=data_shape)
-        else:
-            raise ValueError("Model type %s not supported" % model)
+        self.model = get_model(model_name)
         self.model.load(keyword_file_path)
         self.threshold = threshold
 

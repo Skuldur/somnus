@@ -65,10 +65,10 @@ The command to generate an audio dataset takes the raw audio in `./raw_data/` as
 The command has the following options: 
 
 * **duration**: The duration of the audio clips in seconds
-* **n_positive**: The number of positive examples
-* **n_bgtalk**: The number of examples using negative background speech
-* **n_negative**: The number of negative examples
-* **n_silent**: The number of examples containing only background noise
+* **positive**: The number of positive examples
+* **bgtalk**: The number of examples using negative background speech
+* **negative**: The number of negative examples
+* **silent**: The number of examples containing only background noise
 
 #### Preprocessing and creating the dataset
 ```bash
@@ -79,8 +79,9 @@ The command to preprocess the augmented audio files. It takes the files stored i
 
 The command has the following options: 
 
-* **n_filters**: The number of filters in each frame
+* **filters**: The number of filters in each frame
 * **show_progress**: Boolean option to decide whether to show a progress bar (NOTE: showing progress bar may slow down processing)
+* **split**: The split between train, validation, and test data. The total should add up to 1. E.g. `(0.9, 0.05, 0.05)`
 * **win_length**: The length of each window in frames
 * **win_hop**: the number of frames between the starting frame of each consecutive window.
 
@@ -94,12 +95,24 @@ The command to train a small-footprint keyword model loads the data in `./prepro
 
 The command has the following options:
 
-* **model**: The name of the model we want to train
-* **train_split**: How much data should be in the training set. Valid values are [0.0, 1.0]
-* **n_epochs**: The number of epochs
+* **model_name**: The name of the model we want to train
+* **epochs**: The number of epochs
 * **weights_file**: The name of the file the final weights should be saved to
 * **save_best**: Whether or not the model should save the best model throughout the training process
 * **batch_size**: The size of each mini batch
+
+#### Testing
+
+```bash
+python somnus-cli.py train
+```
+
+The command to test a trained model on a witheld test dataset.
+
+The command has the following options:
+
+* **model_name**: The name of the model we want to test
+* **weights_file**: The path to the weights file
 
 ## Models
 
@@ -109,8 +122,7 @@ Currently Somnus offers the choice between the following models:
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|-------------------------|-----------|
 | cnn-one-stride | [Convolutional Neural Networks for Small-footprint Keyword Spotting](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43969.pdf) | A frequency strided convolutional model with a stride of 4 and no pooling       | 381k                    | 1.5MB     |
 | cnn-trad-pool  | [Convolutional Neural Networks for Small-footprint Keyword Spotting](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43969.pdf) | A keyword detection model with two convolutional layers followed by max pooling | 649k                    | 2.5MB     |
-| crnn-freq-stride  | [Convolutional Recurrent Neural Networks for Small-Footprint Keyword Spotting](https://arxiv.org/ftp/arxiv/papers/1703/1703.05390.pdf) | A convolutional recurrent network with frequency striding | 243k                    | 0.986MB     |
-| crnn-time-stride  | [Convolutional Recurrent Neural Networks for Small-Footprint Keyword Spotting](https://arxiv.org/ftp/arxiv/papers/1703/1703.05390.pdf) | A convolutional recurrent network with time striding | 88k                    | 0.378MB     |
+| crnn-time-stride  | [Convolutional Recurrent Neural Networks for Small-Footprint Keyword Spotting](https://arxiv.org/ftp/arxiv/papers/1703/1703.05390.pdf) | A convolutional recurrent network with time striding | 88k                    | 0.38MB     |
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

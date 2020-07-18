@@ -126,28 +126,16 @@ class CrnnTimeStride(BaseModel):
         opt = Adam(lr=0.0001)
         self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"])
 
+# Model utils
 
-class CrnnFreqStride(BaseModel):
-    def __init__(self, input_shape):
-        """
-        Function creating the model's graph in Keras.
-        
-        Argument:
-            input_shape: shape of the model's input data (using Keras conventions)
-        """
-        self.filepath = "crnn-freq-stride-{epoch:02d}-{loss:.4f}.hdf5"
-        
-        X_input = Input(shape = input_shape)
+def get_model(model_name):
+    if model_name == 'cnn-one-stride':
+        model = CnnOneFStride(input_shape=shape)
+    elif model_name == 'cnn-trad-pool':
+        model = CnnTradFPool(input_shape=shape)
+    elif model_name == 'crnn-time-stride':
+        model = CrnnTimeStride(input_shape=shape)
+    else:
+        raise ValueError("Model type %s not supported" % model)
 
-        conv1 = Conv2D(32, kernel_size=(5, 20), strides=(2,8), padding='same', activation='relu')(X_input)
-        bigru1 = TimeDistributed(Bidirectional(GRU(units=32, return_sequences=True)))(conv1)
-        bigru2 = TimeDistributed(Bidirectional(GRU(units=32)))(bigru1)
-        flatten = Flatten()(bigru2)
-        dense1 = Dense(64, activation='relu')(flatten)
-        output = Dense(3, activation='softmax')(dense1)
-
-        self.model = Model(inputs = X_input, outputs = output)
-
-        opt = Adam(lr=0.0001)
-        self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"])
-
+    return model
