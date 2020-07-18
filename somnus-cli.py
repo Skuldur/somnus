@@ -99,7 +99,7 @@ class SomnusCLI():
         val_labels = np.load('preprocessed_data/validation_labels.npy')
 
         shape = train_data[0].shape
-        model = get_model(model_name)
+        model = get_model(model_name, shape)
         model.train(train_data, train_labels, val_data, val_labels, epochs, save_best, batch_size)
         model.save(weights_file)
 
@@ -113,7 +113,7 @@ class SomnusCLI():
         data = np.load('preprocessed_data/test_data.npy')
         labels = np.load('preprocessed_data/test_labels.npy')
 
-        model = get_model(model_name)
+        model = get_model(model_name, data[0].shape)
 
         model.load(weights)
 

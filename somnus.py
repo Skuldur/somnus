@@ -41,7 +41,7 @@ class Somnus():
         # Each model input data duration in seconds, need to be an integer numbers of chunk_duration
         self.feed_samples = int(self.fs * sample_duration)
 
-        self.model = get_model(model_name)
+        self.model = get_model(model_name, data_shape)
         self.model.load(keyword_file_path)
         self.threshold = threshold
 

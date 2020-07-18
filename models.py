@@ -128,7 +128,7 @@ class CrnnTimeStride(BaseModel):
 
 # Model utils
 
-def get_model(model_name):
+def get_model(model_name, shape):
     if model_name == 'cnn-one-stride':
         model = CnnOneFStride(input_shape=shape)
     elif model_name == 'cnn-trad-pool':
