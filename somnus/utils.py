@@ -1,8 +1,12 @@
 import os
 import glob
+from pathlib import Path
+
 import numpy as np
 from pydub import AudioSegment
+from tqdm import tqdm
 
+SUPPORTED_AUDIO_EXTENSIONS = ['.wav', '.mp3', '.flac', '.ogg', '.flv', '.wma', '.aac']
 
 # Used to standardize volume of audio clip
 def match_target_amplitude(sound, target_dBFS):
@@ -11,27 +15,25 @@ def match_target_amplitude(sound, target_dBFS):
 
 # Load raw audio files for speech synthesis
 def load_raw_audio(base_dir, length=1):
-    activates = []
-    backgrounds = []
-    negatives = []
-    background_talking = []
-
     base = AudioSegment.silent(duration=length * 1000)
-    for filename in glob.iglob(os.path.join(base_dir, 'positives', '*.wav'), recursive=True):
-        activate = AudioSegment.from_wav(filename).set_channels(1)
-        activates.append(activate)
-    for filename in glob.iglob(os.path.join(base_dir, 'backgrounds', '**', '*.wav'), recursive=True):
-        background = AudioSegment.from_wav(filename)
-        backgrounds.append(base.overlay(background, loop=True))
-    for filename in glob.iglob(os.path.join(base_dir, 'negatives', '*.wav'), recursive=True):
-        negative = AudioSegment.from_wav(filename).set_channels(1)
-        negatives.append(negative)
+    def load_directory(audio_dir, loop=False):
+        audio_segments = []
+        for path in Path(os.path.join(base_dir, audio_dir)).rglob('*.*'):
+            if path.suffix in SUPPORTED_AUDIO_EXTENSIONS:
+                audio_format = path.suffix.split('.')[-1]
+                segment = AudioSegment.from_file(path.absolute(), format=audio_format).set_channels(1)
 
-    for filename in glob.iglob(os.path.join(base_dir, 'background_talking', '**', '*.flac'), recursive=True):
-        talking = AudioSegment.from_file(filename, format='flac')
-        background_talking.append(talking)
+                if loop:
+                    segment = base.overlay(segment, loop=True)
+                audio_segments.append(segment)
 
-    return activates, negatives, backgrounds, background_talking
+        return audio_segments
+
+    activates = load_directory('positives')
+    backgrounds = load_directory('backgrounds', loop=True)
+    negatives = load_directory('negatives')
+
+    return activates, negatives, backgrounds
 
 def create_positive_example(background, activates, time_shift):
     background_var = np.random.randint(-15, 10)
@@ -48,8 +50,6 @@ def create_positive_example(background, activates, time_shift):
     background = background.set_frame_rate(16000)
 
     return background
-
-    
 
 def create_negative_example(background, dummy, negative, time_shift):
     background_var = np.random.randint(-15, 10)

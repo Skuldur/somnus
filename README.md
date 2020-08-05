@@ -10,21 +10,11 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install depende
 pip install -r requirements.txt
 ```
 
-### Recommended datasets
-
-Before you start we highly recommend downloading pre-made datasets for both the background talking and background noise. For background talking we recommend the [Librispeech](http://www.openslr.org/12/) dataset. You can pick any of the clean dev, test, or train datasets. To start with we recommend using the `train-clean-100.tar.gz` dataset and moving on to the larger datasets if needed. For background noise we recommend the [DEMAND](https://asa.scitation.org/doi/abs/10.1121/1.4799597) dataset that you can download from Kaggle [here](https://www.kaggle.com/aanhari/demand-dataset).
-
-Extract the data and move the Librispeech dataset to `raw_data/background_talking` and the DEMAND dataset to `raw_data/backgrounds`.
-
-`raw_data/positives` will then contain utterances of your keyword in various conditions using multiple different voices and dialects and `raw_data/negatives` contains custom utterances that you may want to add to the examples of background talking. We recommend that a majority of these utterances use a microphone similar to the one you will be using in the final product. This is because data gathered from different types of microphones can look completely different, e.g. a model trained on utterances recorded using headset microphone will probably not work well with a far field microphone array.
-
-If your model is intended to be used with many different types of microphones then we recommend gathering positive and negative recordings using as many different microphones as you can.
-
 ## Usage
 
 ### Somnus
 
-Somnus can be used to listen for an instance of a selected keyword in a continuous stream of audio data from a single channel from a microphone (multi-channel support will be added at a later date).
+Somnus can be used to listen for an instance of a selected keyword in a continuous stream of audio data from a single channel from a microphone. To find the device index of your microphone run `somnus list_microphones`.
 
 Somnus can handle all the audio interfacing for you so that you only need to initialize Somnus and and call the `listen()` and it will start listening to your microphone until it detects the keyword. Somnus also offers a nonblocking method (`detect_keyword()`) to that allows the user to process the audio themselves and only use Somnus to detect a keyword in an audio time series passed to `detect_keyword()` as an argument.
 
@@ -55,7 +45,11 @@ if activated:
 
 Somnus comes with a CLI that allows you to generate audio data and train your own keyword detection model. The CLI is implemented using Python-Fire. For each command you can use `-h` or `--help` to get a description of the command and a list of the possible arguments for the command.
 
-To start using the CLI run `somnus configure` to create the configuration for the Somnus CLI.
+To start using the CLI run `somnus configure` to create the configuration for the Somnus CLI. Then the raw data directory must contain three sub-directories:
+
+* `positives/` for audio files containing utterances of the keyword.
+* `negatives/` for audio files containing speech that does not contain utterances of the keyword.
+* `backgrounds/` for audio files that contain background noise.
 
 #### Configure
 
@@ -83,7 +77,6 @@ The command has the following options:
 
 * **duration**: The duration of the audio clips in seconds
 * **positive**: The number of positive examples
-* **bgtalk**: The number of examples using negative background speech
 * **negative**: The number of negative examples
 * **silent**: The number of examples containing only background noise
 
@@ -131,6 +124,14 @@ The command has the following options:
 * **model_name**: The name of the model we want to test
 * **weights_file**: The path to the weights file
 
+#### List microphones
+
+```bash
+somnus list_microphones
+```
+
+Prints out a list of microphones connected to your device along with their device IDs.
+
 ## Models
 
 Currently Somnus offers the choice between the following models:
@@ -140,6 +141,16 @@ Currently Somnus offers the choice between the following models:
 | cnn-one-stride | [Convolutional Neural Networks for Small-footprint Keyword Spotting](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43969.pdf) | A frequency strided convolutional model with a stride of 4 and no pooling       | 381k                    | 1.5MB     |
 | cnn-trad-pool  | [Convolutional Neural Networks for Small-footprint Keyword Spotting](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43969.pdf) | A keyword detection model with two convolutional layers followed by max pooling | 649k                    | 2.5MB     |
 | crnn-time-stride  | [Convolutional Recurrent Neural Networks for Small-Footprint Keyword Spotting](https://arxiv.org/ftp/arxiv/papers/1703/1703.05390.pdf) | A convolutional recurrent network with time striding | 88k                    | 380KB     |
+
+## Recommended datasets
+
+Before you start we highly recommend downloading pre-made datasets for both the negative examples and background noise. For negative examples we recommend the [Librispeech](http://www.openslr.org/12/) dataset. You can pick any of the dev, test, or train datasets. To start with we recommend using the `train-clean-100.tar.gz` dataset and moving on to the larger datasets if needed. For background noise we recommend the [DEMAND](https://asa.scitation.org/doi/abs/10.1121/1.4799597) dataset that you can download from Kaggle [here](https://www.kaggle.com/aanhari/demand-dataset).
+
+Extract the data and move the Librispeech dataset to the raw audio directory and place it in the `negatives/` sub-directory and the DEMAND dataset to the `backgrounds/` sub-directory.
+
+`positives/` will then contain utterances of your keyword in various conditions using multiple different voices and dialects. Additionally, you can add custom negative examples to the `negatives/` sub-directory. We recommend that a majority of these utterances use a microphone similar to the one you will be using in the final product. This is because data gathered from different types of microphones can look completely different, e.g. a model trained on utterances recorded using headset microphone will probably not work well with a far field microphone array.
+
+If your model is intended to be used with many different types of microphones then we recommend gathering positive and negative recordings using as many different microphones as you can.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

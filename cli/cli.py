@@ -1,5 +1,6 @@
 import json
-from functools import partial, wraps
+from functools import wraps
+from pathlib import Path
 from types import FunctionType
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
@@ -52,8 +53,9 @@ class SomnusCLI(metaclass=ConfigWrapper):
         
     def _load_config(self):
         config = {}
-        if os.path.isfile('test.json'):
-            with open('test.json', 'r') as file:
+        config_file = os.path.join(Path.home(), '.somnus', 'config.json')
+        if os.path.isfile(config_file):
+            with open(config_file, 'r') as file:
                 config = json.load(file)
 
         # we copy the values over so that the config wrapper has a reference to the correct config
@@ -66,10 +68,12 @@ class SomnusCLI(metaclass=ConfigWrapper):
         config['augmented_audio'] = input("Augmented Audio Directory [%s]: " % self.config.get('augmented_audio')) or self.config.get('augmented_audio')
         config['preprocessed_data'] = input("Preprocessed Data Directory [%s]: " % self.config.get('preprocessed_data')) or self.config.get('preprocessed_data')
 
-        with open('test.json', 'w') as file:
+        config_file = os.path.join(Path.home(), '.somnus', 'config.json')
+        os.makedirs(os.path.dirname(config_file), exist_ok=True)
+        with open(config_file, 'w') as file:
             file.write(json.dumps(config))
 
-    def augment_audio(self, duration=1, positive=90000, bgtalk=180000, silent=90000, negative=120000):
+    def augment_audio(self, duration=1, positive=90000, negative=120000, background=90000):
         """
         Method to create the audio dataset for keyword recognition.
 
@@ -84,13 +88,12 @@ class SomnusCLI(metaclass=ConfigWrapper):
 
         :param duration: The duration of the audio clips in seconds
         :param positive: The number of positive examples
-        :param bgtalk: The number of examples using negative background speech
         :param negative: The number of negative examples
-        :param silent: The number of examples containing only background noise
+        :param background: The number of examples containing only background noise
         """
 
         print('Please wait while we load the raw audio files...')
-        activates, negatives, backgrounds, background_talking = load_raw_audio(self.config['raw_audio'], duration)
+        activates, negatives, backgrounds = load_raw_audio(self.config['raw_audio'], duration)
 
         aug_path = self.config['augmented_audio']
         print('Augmenting positive audio samples:')
@@ -100,12 +103,12 @@ class SomnusCLI(metaclass=ConfigWrapper):
 
             segment.export(os.path.join(aug_path, 'positive_%s.wav' % i), format='wav')
 
-        print('Augmenting background talk audio samples:')
-        for i in tqdm(range(bgtalk)):
+        print('Augmenting negative audio samples:')
+        for i in tqdm(range(negative)):
             time_shift = np.random.randint(600)
-            segment = create_negative_example(backgrounds[i % len(backgrounds)], activates[0], background_talking[i % len(background_talking)], time_shift)
+            segment = create_negative_example(backgrounds[i % len(backgrounds)], activates[0], negatives[i % len(negatives)], time_shift)
 
-            segment.export(os.path.join(aug_path, 'negative_%s.wav' % i), format='wav')
+            segment.export(os.path.join(aug_path, 'negative_%d.wav' % (i+bgtalk)), format='wav')
 
         print('Augmenting background audio audio samples:')
         for i in tqdm(range(silent)):
@@ -113,12 +116,6 @@ class SomnusCLI(metaclass=ConfigWrapper):
 
             segment.export(os.path.join(aug_path, 'background_%s.wav' % i), format='wav')
 
-        print('Augmenting negative audio samples:')
-        for i in tqdm(range(negative)):
-            time_shift = np.random.randint(600)
-            segment = create_negative_example(backgrounds[i % len(backgrounds)], activates[0], negatives[i % len(negatives)], time_shift)
-
-            segment.export(os.path.join(aug_path, 'negative_%d.wav' % (i+bgtalk)), format='wav')
 
 
     def preprocess(self,  filters=40, show_progress=True, split=(0.9, 0.05, 0.05), win_length=0.025, win_hop=0.01):
@@ -230,7 +227,7 @@ class SomnusCLI(metaclass=ConfigWrapper):
         """
         p = pyaudio.PyAudio()
         for i in range(p.get_device_count()):
-            print("Input Device id ", i, " - ", p.get_device_info_by_host_api_device_index(0, i).get('name'))         
+            print("Input Device id ", i, " - ", p.get_device_info_by_host_api_device_index(0, i).get('name'))
 
 
 def main():

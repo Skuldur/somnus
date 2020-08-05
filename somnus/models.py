@@ -127,7 +127,6 @@ class CrnnTimeStride(BaseModel):
         self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"])
 
 # Model utils
-
 def get_model(model_name, shape):
     if model_name == 'cnn-one-stride':
         model = CnnOneFStride(input_shape=shape)

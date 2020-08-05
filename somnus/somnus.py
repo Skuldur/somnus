@@ -4,8 +4,8 @@ from threading import Thread
 import sys
 import numpy as np
 
-from models import get_model
-from preprocess_audio import melnormalize
+from somnus.models import get_model
+from somnus.preprocess_audio import melnormalize
 
 
 class Somnus():
