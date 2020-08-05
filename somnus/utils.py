@@ -17,17 +17,17 @@ def load_raw_audio(base_dir, length=1):
     background_talking = []
 
     base = AudioSegment.silent(duration=length * 1000)
-    for filename in glob.iglob(os.path.join(base_dir, 'positives', '*.wav')):
+    for filename in glob.iglob(os.path.join(base_dir, 'positives', '*.wav'), recursive=True):
         activate = AudioSegment.from_wav(filename).set_channels(1)
         activates.append(activate)
-    for filename in glob.iglob(os.path.join(base_dir, 'backgrounds', '**', '*.wav')):
+    for filename in glob.iglob(os.path.join(base_dir, 'backgrounds', '**', '*.wav'), recursive=True):
         background = AudioSegment.from_wav(filename)
         backgrounds.append(base.overlay(background, loop=True))
-    for filename in glob.iglob(os.path.join(base_dir, 'negatives', '*.wav')):
+    for filename in glob.iglob(os.path.join(base_dir, 'negatives', '*.wav'), recursive=True):
         negative = AudioSegment.from_wav(filename).set_channels(1)
         negatives.append(negative)
 
-    for filename in glob.iglob(os.path.join(base_dir, 'background_talking', '**', '**', '*.flac')):
+    for filename in glob.iglob(os.path.join(base_dir, 'background_talking', '**', '*.flac'), recursive=True):
         talking = AudioSegment.from_file(filename, format='flac')
         background_talking.append(talking)
 

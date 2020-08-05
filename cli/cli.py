@@ -194,7 +194,7 @@ class SomnusCLI(metaclass=ConfigWrapper):
         model.train(train_data, train_labels, val_data, val_labels, epochs, save_best, batch_size)
         model.save(weights_file)
 
-    def test_model(self, model_name='cnn-one-stride', weights='model_weights.hdf5'):
+    def test(self, model_name='cnn-one-stride', weights='model_weights.hdf5'):
         """
         Tests a trained model against a test dataset
 
@@ -222,7 +222,7 @@ class SomnusCLI(metaclass=ConfigWrapper):
                 wrong += 1
 
         percentage = 100*((len(data)-wrong) / len(data))
-        print("Testset accuracy is %s percent" % percentage)
+        print("\n Test dataset accuracy is %s percent" % percentage)
 
     def list_microphones(self):
         """
@@ -230,7 +230,6 @@ class SomnusCLI(metaclass=ConfigWrapper):
         """
         p = pyaudio.PyAudio()
         for i in range(p.get_device_count()):
-            #print(p.get_device_info_by_index(i).get('name'))
             print("Input Device id ", i, " - ", p.get_device_info_by_host_api_device_index(0, i).get('name'))         
 
 
