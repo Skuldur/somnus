@@ -7,6 +7,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import fire
 import numpy as np
 from tqdm import tqdm
+import pyaudio
 
 from somnus.utils import load_raw_audio, create_positive_example, create_negative_example, create_silent_example
 
@@ -222,6 +223,14 @@ class SomnusCLI(metaclass=ConfigWrapper):
 
         percentage = 100*((len(data)-wrong) / len(data))
         print("Testset accuracy is %s percent" % percentage)
+
+    def list_microphones(self):
+        """
+        List all microphones connected to the device
+        """
+        p = pyaudio.PyAudio()
+        for i in range(p.get_device_count()):
+            print(p.get_device_info_by_index(i).get('name'))
 
 def main():
     fire.Fire(SomnusCLI)
