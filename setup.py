@@ -18,6 +18,6 @@ setuptools.setup(
     ],
     entry_points = {
         'console_scripts': ['somnus=cli.cli:main'],
-    }
+    },
     python_requires='>=3.6',
 )
