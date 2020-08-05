@@ -147,7 +147,7 @@ class Somnus():
         self.q = Queue()
         self.data = np.zeros(self.feed_samples, dtype='int16')
 
-    def _get_prediction(audio_stream):
+    def _get_prediction(self, audio_stream):
         """
         Predicts the class of the audio time series
 
