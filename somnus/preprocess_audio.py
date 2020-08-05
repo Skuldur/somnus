@@ -8,11 +8,12 @@ from tensorflow.keras import utils
 from tqdm import tqdm
 
 
-def create_dataset(n_filters, show_progress, win_length, win_hop):
+def create_dataset(base_dir, n_filters, show_progress, win_length, win_hop):
     """
-    Create a dataset using the melnormalized representations of the audio files in ./processed_audio
+    Create a dataset using the melnormalized representations of the audio files in base_dir
 
     Args:
+        base_dir (string): The directory containing all augmented audio files
         n_filters (int): The number of filters in each frame
         show_progress (boolean): Boolean option to decide whether to show a progress bar (NOTE: showing progress bar may slow down processing)
         win_length (int): The length of each window in frames
@@ -26,37 +27,26 @@ def create_dataset(n_filters, show_progress, win_length, win_hop):
     data = []
     labels = []
 
-    # read total number of files for progress bar
-    _, _, files = next(os.walk("./processed_audio/"))
+    # read total number of files for the progress bar
+    _, _, files = next(os.walk(base_dir))
     total_files = len(files)
-
 
     if show_progress:
         pbar = tqdm(total=total_files)
 
-    for filename in glob.iglob('./processed_audio/positive*'):
-        y, sr = librosa.load(filename, sr = 16000)
-        x = melnormalize(y, n_filters, win_length, win_hop)
-        data.append(x)
-        labels.append(0)
+    def preprocess_data(path, label):
+        for filename in glob.iglob(path):
+            y, sr = librosa.load(filename, sr = 16000)
+            x = melnormalize(y, n_filters, win_length, win_hop)
+            data.append(x)
+            labels.append(label)
 
-        if show_progress:
-            pbar.update(1)
-    for filename in  glob.iglob('./processed_audio/negative*'):
-        y, sr = librosa.load(filename, sr = 16000)
-        x = melnormalize(y, n_filters, win_length, win_hop)
-        data.append(x)
-        labels.append(1)
-        if show_progress:
-            pbar.update(1)
-    for filename in  glob.iglob('./processed_audio/background*'):
-        y, sr = librosa.load(filename, sr = 16000)
-        x = melnormalize(y, n_filters, win_length, win_hop)
-        data.append(x)
-        labels.append(2)
+            if show_progress:
+                pbar.update(1)
 
-        if show_progress:
-            pbar.update(1)
+    preprocess_data(os.path.join(base_dir, 'positive*'), 0)
+    preprocess_data(os.path.join(base_dir, 'negative*'), 1)
+    preprocess_data(os.path.join(base_dir, 'background*'), 2)
 
     labels = utils.to_categorical(labels)
     return np.array(data), np.array(labels)

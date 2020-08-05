@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 ### Recommended datasets
 
-Before you start we highly recommend downloading pre-made datasets for both the background talking and background noise. For background talking we recommend the [Librispeech](http://www.openslr.org/12/) dataset. You can pick any of the clean dev, test, or train datasets. To start with we recommend using the `test-clean.tar.gz` dataset and moving on to the larger datasets if needed. For background noise we recommend the [DEMAND](https://asa.scitation.org/doi/abs/10.1121/1.4799597) dataset that you can download from Kaggle [here](https://www.kaggle.com/aanhari/demand-dataset).
+Before you start we highly recommend downloading pre-made datasets for both the background talking and background noise. For background talking we recommend the [Librispeech](http://www.openslr.org/12/) dataset. You can pick any of the clean dev, test, or train datasets. To start with we recommend using the `train-clean-100.tar.gz` dataset and moving on to the larger datasets if needed. For background noise we recommend the [DEMAND](https://asa.scitation.org/doi/abs/10.1121/1.4799597) dataset that you can download from Kaggle [here](https://www.kaggle.com/aanhari/demand-dataset).
 
 Extract the data and move the Librispeech dataset to `raw_data/background_talking` and the DEMAND dataset to `raw_data/backgrounds`.
 
@@ -34,11 +34,12 @@ Somnus has the following parameters:
 * **model (default: 'cnn-one-stride')**: The name of the model you wish to use.
 * **device_index (default: 0)**: The device index of the microphone that Somnus should listen to.
 * **threshold (default: 0.9)**: A threshold for how confident Somnus has to be for it to detect the keyword
-* **data_shape (default: (101 40 1))**: The input shape for the keyword model
-* **sample_duration (default: 1)**: How long the input of the keyword model should be in seconds
-* **n_filters (default: 40)**: The number of filters in each frame
-* **win_length (default: 400)**: The length of each window in frames
-* **win_hop (default: 160)**: the number of frames between the starting frame of each consecutive window.
+* **audio_config**: A dictionary containing the configuration specific to the audio time series. It contains the following:
+	* **data_shape (default: (101, 40, 1))**: The input shape for the keyword model
+	* **sample_duration (default: 1)**: How long the input of the keyword model should be in seconds
+	* **n_filters (default: 40)**: The number of filters in each frame
+	* **win_length (default: 400)**: The length of each window in frames
+	* **win_hop (default: 160)**: the number of frames between the starting frame of each consecutive window.
 
 #### Example
 
@@ -54,13 +55,29 @@ if activated:
 
 Somnus comes with a CLI that allows you to generate audio data and train your own keyword detection model. The CLI is implemented using Python-Fire. For each command you can use `-h` or `--help` to get a description of the command and a list of the possible arguments for the command.
 
+To start using the CLI run `somnus configure` to create the configuration for the Somnus CLI.
+
+#### Configure
+
+```bash
+somnus configure
+```
+
+Create a configuration file with the absolute paths to the:
+
+* Raw audio data directory
+* Directory that should contain the augmented audio files
+* Directory that should contain the preprocessed data files
+
+**Note** that the augmented audio files and preprocessed data files can use a lot of space so make sure to put them somewhere with a lot of available space.
+
 #### Augmenting audio
 
 ```bash
-python somnus-cli.py augment_audio_dataset
+somnus augment_audio
 ```
 
-The command to generate an audio dataset takes the raw audio in `./raw_data/` as input and generates positive, negative, and silent audio files with varying amounts of background noise. These audio files are written to `./processed_audio/`.
+The command to generate an audio dataset takes the raw audio in your raw audio directory as input and generates positive, negative, and silent audio files with varying amounts of background noise. These audio files are written to the augmented audio directory.
 
 The command has the following options: 
 
@@ -72,23 +89,23 @@ The command has the following options:
 
 #### Preprocessing and creating the dataset
 ```bash
-python somnus-cli.py preprocess
+somnus preprocess
 ```
 
-The command to preprocess the augmented audio files. It takes the files stored in `./processed_audio/` and melnormalizes them and stores the output array in `./preprocessed_data/`.
+The command to preprocess the augmented audio files. It takes the files stored in the augmented audio directory, normalizes them and stores the output array in the preprocessed data directory.
 
 The command has the following options: 
 
 * **filters**: The number of filters in each frame
 * **show_progress**: Boolean option to decide whether to show a progress bar (NOTE: showing progress bar may slow down processing)
 * **split**: The split between train, validation, and test data. The total should add up to 1. E.g. `(0.9, 0.05, 0.05)`
-* **win_length**: The length of each window in frames
-* **win_hop**: the number of frames between the starting frame of each consecutive window.
+* **win_length**: The length of each window in seconds
+* **win_hop**: the time between the start of each consecutive window.
 
 #### Training
 
 ```bash
-python somnus-cli.py train
+somnus train
 ```
 
 The command to train a small-footprint keyword model loads the data in `./preprocessed_data/` and uses it to train the keyword model.
@@ -104,7 +121,7 @@ The command has the following options:
 #### Testing
 
 ```bash
-python somnus-cli.py train
+somnus test
 ```
 
 The command to test a trained model on a witheld test dataset.
@@ -122,7 +139,7 @@ Currently Somnus offers the choice between the following models:
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|-------------------------|-----------|
 | cnn-one-stride | [Convolutional Neural Networks for Small-footprint Keyword Spotting](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43969.pdf) | A frequency strided convolutional model with a stride of 4 and no pooling       | 381k                    | 1.5MB     |
 | cnn-trad-pool  | [Convolutional Neural Networks for Small-footprint Keyword Spotting](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43969.pdf) | A keyword detection model with two convolutional layers followed by max pooling | 649k                    | 2.5MB     |
-| crnn-time-stride  | [Convolutional Recurrent Neural Networks for Small-Footprint Keyword Spotting](https://arxiv.org/ftp/arxiv/papers/1703/1703.05390.pdf) | A convolutional recurrent network with time striding | 88k                    | 0.38MB     |
+| crnn-time-stride  | [Convolutional Recurrent Neural Networks for Small-Footprint Keyword Spotting](https://arxiv.org/ftp/arxiv/papers/1703/1703.05390.pdf) | A convolutional recurrent network with time striding | 88k                    | 380KB     |
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
