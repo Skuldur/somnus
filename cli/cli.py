@@ -223,8 +223,5 @@ class SomnusCLI(metaclass=ConfigWrapper):
         percentage = 100*((len(data)-wrong) / len(data))
         print("Testset accuracy is %s percent" % percentage)
 
-if __name__ == '__main__':
-    fire.Fire(SomnusCLI)
-
 def main():
     fire.Fire(SomnusCLI)
