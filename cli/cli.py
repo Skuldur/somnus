@@ -117,7 +117,7 @@ class SomnusCLI(metaclass=ConfigWrapper):
             time_shift = np.random.randint(600)
             segment = create_negative_example(backgrounds[i % len(backgrounds)], activates[0], negatives[i % len(negatives)], time_shift)
 
-            segment.export(os.path.join(aug_path, 'negative_%d.wav' % str(i+bgtalk)), format='wav')
+            segment.export(os.path.join(aug_path, 'negative_%d.wav' % (i+bgtalk)), format='wav')
 
 
     def preprocess(self,  filters=40, show_progress=True, split=(0.9, 0.05, 0.05), win_length=0.025, win_hop=0.01):
