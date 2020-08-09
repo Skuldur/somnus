@@ -22,6 +22,7 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
+        sudo apt-get update
         sudo apt-get install ffmpeg
         sudo apt-get install portaudio19-dev python-pyaudio python3-pyaudio
         python -m pip install --upgrade pip
