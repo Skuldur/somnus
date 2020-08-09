@@ -119,7 +119,7 @@ class SomnusCLI(metaclass=ConfigWrapper):
             segment.export(os.path.join(aug_path, 'negative_%d.wav' % i), format='wav')
 
         print('Augmenting background audio audio samples:')
-        for i in tqdm(range(silent)):
+        for i in tqdm(range(background)):
             segment = create_silent_example(backgrounds[i % len(backgrounds)], positives[0])
 
             segment.export(os.path.join(aug_path, 'background_%s.wav' % i), format='wav')
