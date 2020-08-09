@@ -4,10 +4,10 @@ Somnus allows you to listen for and detect a specific keyword in a continuous st
 
 ## Getting started
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install dependencies
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the Somnus package and the CLI
 
 ```bash
-pip install -r requirements.txt
+pip install somnus
 ```
 
 ## Usage
