@@ -35,15 +35,11 @@ def load_raw_audio(base_dir, length=1):
 
     return activates, negatives, backgrounds
 
-def create_positive_example(background, activates, time_shift):
+def create_positive_example(background, activate, time_shift):
     background_var = np.random.randint(-15, 10)
     background = background + background_var
 
-    random_index = np.random.randint(len(activates))
-    random_activate = activates[random_index]
-
-    random_activate = random_activate
-    background = background.overlay(random_activate, position = time_shift)
+    background = background.overlay(activate, position = time_shift)
 
     background = match_target_amplitude(background, -20.0)
 
@@ -69,8 +65,6 @@ def create_negative_example(background, dummy, negative, time_shift):
 
     return background
 
-    background.export("processed_audio/negative_%s.wav" % i, format='wav')
-
 def create_silent_example(background, dummy):
     background_var = np.random.randint(-15, 10)
     background = background + background_var
@@ -79,5 +73,3 @@ def create_silent_example(background, dummy):
     background = background.set_frame_rate(16000)
 
     return background
-
-    background.export("processed_audio/background_%s.wav" % i, format='wav')

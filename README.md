@@ -47,9 +47,11 @@ Somnus comes with a CLI that allows you to generate audio data and train your ow
 
 To start using the CLI run `somnus configure` to create the configuration for the Somnus CLI. Then the raw data directory must contain three sub-directories:
 
-* `positives/` for audio files containing utterances of the keyword.
-* `negatives/` for audio files containing speech that does not contain utterances of the keyword.
-* `backgrounds/` for audio files that contain background noise.
+* `positives/` for audio files containing utterances of the keyword. Must contain at least 1 audio file.
+* `negatives/` for audio files containing speech that does not contain utterances of the keyword. Must contain at least 1 audio file.
+* `backgrounds/` for audio files that contain background noise. This directory is optional but we recommend adding noise to the training data so that the keyword detector also works in noisy conditions.
+
+The CLI currently supports the following audio types: **wav, mp3, flac, ogg, flv, wma, aac**
 
 #### Configure
 
@@ -110,6 +112,7 @@ The command has the following options:
 * **weights_file**: The name of the file the final weights should be saved to
 * **save_best**: Whether or not the model should save the best model throughout the training process
 * **batch_size**: The size of each mini batch
+* **lr**: The initial learning rate
 
 #### Testing
 

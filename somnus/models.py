@@ -10,6 +10,10 @@ class BaseModel():
         self.model = None
         self.filepath = ''
 
+    def compile(self, learning_rate):
+        opt = Adam(lr=learning_rate)
+        self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"])
+
     def train(self, data, labels, val_data, val_labels, epochs, save_best, batch_size):
         callbacks = []
         reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2,
@@ -72,8 +76,6 @@ class CnnTradFPool(BaseModel):
         dense = Dense(3, activation='softmax')(flattened)
 
         self.model = Model(inputs = X_input, outputs = dense)
-        opt = Adam(lr=0.0001)
-        self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"])
 
 
 class CnnOneFStride(BaseModel):
@@ -98,9 +100,6 @@ class CnnOneFStride(BaseModel):
 
         self.model = Model(inputs = X_input, outputs = dense)
 
-        opt = Adam(lr=0.0001)
-        self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"]) 
-
 
 class CrnnTimeStride(BaseModel):
     def __init__(self, input_shape):
@@ -123,8 +122,6 @@ class CrnnTimeStride(BaseModel):
 
         self.model = Model(inputs = X_input, outputs = output)
 
-        opt = Adam(lr=0.0001)
-        self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=["accuracy"])
 
 # Model utils
 def get_model(model_name, shape):

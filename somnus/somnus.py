@@ -1,8 +1,11 @@
-import pyaudio
 from queue import Queue
 from threading import Thread
 import sys
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+
 import numpy as np
+import pyaudio
 
 from somnus.models import get_model
 from somnus.preprocess_audio import melnormalize

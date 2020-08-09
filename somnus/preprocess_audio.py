@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 def create_dataset(base_dir, n_filters, show_progress, win_length, win_hop):
     """
-    Create a dataset using the melnormalized representations of the audio files in base_dir
+    Create a dataset using the normalized representations of the audio files in base_dir
 
     Args:
         base_dir (string): The directory containing all augmented audio files
@@ -20,7 +20,7 @@ def create_dataset(base_dir, n_filters, show_progress, win_length, win_hop):
         win_hop (int): the number of frames between the starting frame of each consecutive window.
 
     Returns:
-        data (array): A 4D array of melnormalized audio files stored in arrays in the shape of (X, n_filters, 1), where X is the
+        data (array): A 4D array of normalized audio files stored in arrays in the shape of (X, n_filters, 1), where X is the
             number of windows.
         labels (array): A 1D array of labels corresponding to an array at the same index in the data array. 
     """

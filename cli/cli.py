@@ -93,30 +93,36 @@ class SomnusCLI(metaclass=ConfigWrapper):
         """
 
         print('Please wait while we load the raw audio files...')
-        activates, negatives, backgrounds = load_raw_audio(self.config['raw_audio'], duration)
+        positives, negatives, backgrounds = load_raw_audio(self.config['raw_audio'], duration)
+
+        if len(positives) == 0:
+            raise IndexError('There are no supported audio files in %s/%s' % (self.config['raw_audio'], 'positives'))
+        if len(negatives) == 0:
+            raise IndexError('There are no supported audio files in %s/%s' % (self.config['raw_audio'], 'negatives'))
+        if len(backgrounds) == 0:
+            # Add a single silent background audio segment
+            backgrounds.append(AudioSegment.silent(duration=duration * 1000))
 
         aug_path = self.config['augmented_audio']
         print('Augmenting positive audio samples:')
         for i in tqdm(range(positive)):
             time_shift = np.random.randint(200)
-            segment = create_positive_example(backgrounds[i % len(backgrounds)], activates, time_shift)
+            segment = create_positive_example(backgrounds[i % len(backgrounds)], positives[i % len(positives)], time_shift)
 
             segment.export(os.path.join(aug_path, 'positive_%s.wav' % i), format='wav')
 
         print('Augmenting negative audio samples:')
         for i in tqdm(range(negative)):
             time_shift = np.random.randint(600)
-            segment = create_negative_example(backgrounds[i % len(backgrounds)], activates[0], negatives[i % len(negatives)], time_shift)
+            segment = create_negative_example(backgrounds[i % len(backgrounds)], positives[0], negatives[i % len(negatives)], time_shift)
 
             segment.export(os.path.join(aug_path, 'negative_%d.wav' % (i+bgtalk)), format='wav')
 
         print('Augmenting background audio audio samples:')
         for i in tqdm(range(silent)):
-            segment = create_silent_example(backgrounds[i % len(backgrounds)], activates[0])
+            segment = create_silent_example(backgrounds[i % len(backgrounds)], positives[0])
 
             segment.export(os.path.join(aug_path, 'background_%s.wav' % i), format='wav')
-
-
 
     def preprocess(self,  filters=40, show_progress=True, split=(0.9, 0.05, 0.05), win_length=0.025, win_hop=0.01):
         """
@@ -167,7 +173,7 @@ class SomnusCLI(metaclass=ConfigWrapper):
             % json.dumps(audio_config, indent=2, sort_keys=True))
 
     def train(self, model_name='cnn-one-stride',  epochs=200, weights_file='model_weights.hdf5',
-                save_best=False, batch_size=64):
+                save_best=False, batch_size=64, lr=0.0001):
         """
         Trains a small-footprint keyword detection model using augmented WAV files
 
@@ -176,6 +182,7 @@ class SomnusCLI(metaclass=ConfigWrapper):
         :param weights_file: The name of the file the final weights should be saved to
         :param save_best: Whether or not the model should save the best model throughout the training process
         :param batch_size: The size of each mini batch
+        :param lr: The initial learning rate
         """
         from somnus.models import get_model
 
@@ -188,6 +195,7 @@ class SomnusCLI(metaclass=ConfigWrapper):
 
         shape = train_data[0].shape
         model = get_model(model_name, shape)
+        model.compile(lr)
         model.train(train_data, train_labels, val_data, val_labels, epochs, save_best, batch_size)
         model.save(weights_file)
 
