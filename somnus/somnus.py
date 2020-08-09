@@ -30,7 +30,7 @@ class Somnus():
             model=None,
             model_name='cnn-one-stride',
             device_index=0, 
-            threshold=0.9, 
+            threshold=0.5, 
             audio_config=None
         ):
 

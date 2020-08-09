@@ -25,7 +25,7 @@ Somnus has the following parameters:
 * **keyword_file_path**: The relative or absolute path to a weights file for the keyword model.
 * **model (default: 'cnn-one-stride')**: The name of the model you wish to use.
 * **device_index (default: 0)**: The device index of the microphone that Somnus should listen to.
-* **threshold (default: 0.9)**: A threshold for how confident Somnus has to be for it to detect the keyword
+* **threshold (default: 0.5)**: A threshold for how confident Somnus has to be for it to detect the keyword
 * **audio_config**: A dictionary containing the configuration specific to the audio time series. It contains the following:
 	* **data_shape (default: (101, 40, 1))**: The input shape for the keyword model
 	* **sample_duration (default: 1)**: How long the input of the keyword model should be in seconds
