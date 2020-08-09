@@ -6,7 +6,7 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
 from tensorflow.keras import losses
 
 class BaseModel():
-    def __init__():
+    def __init__(self):
         self.model = None
         self.filepath = ''
 
