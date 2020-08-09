@@ -18,7 +18,7 @@ pip install somnus
 
 Somnus can be used to listen for an instance of a selected keyword in a continuous stream of audio data from a single channel from a microphone. To find the device index of your microphone run `somnus list_microphones`.
 
-Somnus can handle all the audio interfacing for you so that you only need to initialize Somnus and and call the `listen()` and it will start listening to your microphone until it detects the keyword. Somnus also offers a nonblocking method (`detect_keyword()`) to that allows the user to process the audio themselves and only use Somnus to detect a keyword in an audio time series passed to `detect_keyword()` as an argument.
+Somnus can handle all the audio interfacing for you so that you only need to initialize Somnus and and call the `listen()` and it will start listening to your microphone until it detects the keyword. Somnus also offers a nonblocking method (`detect_keyword()`) that allows the user to process the audio themselves and only use Somnus to detect a keyword in an audio time series passed to `detect_keyword()` as an argument.
 
 Somnus has the following parameters:
 
