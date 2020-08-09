@@ -94,7 +94,7 @@ The command to preprocess the augmented audio files. It takes the files stored i
 The command has the following options: 
 
 **--filters**: The number of filters in each frame  
-**--show_progress**: Boolean option to decide whether to show a progress bar
+**--show_progress**: Boolean option to decide whether to show a progress bar  
 **--split**: The split between train, validation, and test data. The total should add up to 1. E.g. `(0.9, 0.05, 0.05)`  
 **--win_length**: The length of each window in seconds  
 **--win_hop**: the time between the start of each consecutive window.  
