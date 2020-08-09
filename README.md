@@ -1,5 +1,7 @@
 # Somnus
 
+![Build](https://github.com/skuldur/somnus/workflows/build/badge.svg)
+
 Somnus allows you to listen for and detect a specific keyword in a continuous stream of audio data. It uses keyword detection models written in Tensorflow 2.0 to detect instances of the keyword and by using small-footprint models Somnus keeps memory usage low and latency to a minimum.
 
 ## Getting started
