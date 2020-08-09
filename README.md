@@ -77,10 +77,10 @@ The command to generate an audio dataset takes the raw audio in your raw audio d
 
 The command has the following options: 
 
-* **duration**: The duration of the audio clips in seconds
-* **positive**: The number of positive examples
-* **negative**: The number of negative examples
-* **silent**: The number of examples containing only background noise
+* **--duration**: The duration of the audio clips in seconds
+* **--positive**: The number of positive examples
+* **--negative**: The number of negative examples
+* **--silent**: The number of examples containing only background noise
 
 #### Preprocessing and creating the dataset
 ```bash
@@ -91,11 +91,11 @@ The command to preprocess the augmented audio files. It takes the files stored i
 
 The command has the following options: 
 
-* **filters**: The number of filters in each frame
-* **show_progress**: Boolean option to decide whether to show a progress bar (NOTE: showing progress bar may slow down processing)
-* **split**: The split between train, validation, and test data. The total should add up to 1. E.g. `(0.9, 0.05, 0.05)`
-* **win_length**: The length of each window in seconds
-* **win_hop**: the time between the start of each consecutive window.
+* **--filters**: The number of filters in each frame
+* **--show_progress**: Boolean option to decide whether to show a progress bar (NOTE: showing progress bar may slow down processing)
+* **--split**: The split between train, validation, and test data. The total should add up to 1. E.g. `(0.9, 0.05, 0.05)`
+* **--win_length**: The length of each window in seconds
+* **--win_hop**: the time between the start of each consecutive window.
 
 #### Training
 
@@ -107,12 +107,12 @@ The command to train a small-footprint keyword model loads the data in `./prepro
 
 The command has the following options:
 
-* **model_name**: The name of the model we want to train
-* **epochs**: The number of epochs
-* **weights_file**: The name of the file the final weights should be saved to
-* **save_best**: Whether or not the model should save the best model throughout the training process
-* **batch_size**: The size of each mini batch
-* **lr**: The initial learning rate
+* **--model_name**: The name of the model we want to train
+* **--epochs**: The number of epochs
+* **--weights_file**: The name of the file the final weights should be saved to
+* **--save_best**: Whether or not the model should save the best model throughout the training process
+* **--batch_size**: The size of each mini batch
+* **--lr**: The initial learning rate
 
 #### Testing
 
@@ -124,8 +124,8 @@ The command to test a trained model on a witheld test dataset.
 
 The command has the following options:
 
-* **model_name**: The name of the model we want to test
-* **weights_file**: The path to the weights file
+* **--model_name**: The name of the model we want to test
+* **--weights_file**: The path to the weights file
 
 #### List microphones
 
