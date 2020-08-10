@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="somnus",
-    version="0.1.0",
+    version="0.1.1",
     author="Sigurður Skúli Sigurgeirsson",
     author_email="siggiskuli@gmail.com",
     description="Somnus allows you to listen for and detect a specific keyword in a continuous stream of audio data.",
