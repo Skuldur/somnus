@@ -17,7 +17,7 @@ setuptools.setup(
         "numpy==1.16.2",
         "pydub==0.23.1",
         "pyaudio==0.2.11",
-        "librosa==0.7.2",
+        "librosa==0.8.0",
         "tensorflow==2.2.0",
         "fire==0.3.1",
         "tqdm==4.47.0"
