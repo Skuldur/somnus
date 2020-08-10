@@ -6,6 +6,14 @@ Somnus allows you to listen for and detect a specific keyword in a continuous st
 
 ## Getting started
 
+### Prerequisites
+
+```bash
+sudo apt-get install portaudio19-dev python-pyaudio python3-pyaudio
+```
+
+### Installation
+
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the Somnus package and the CLI
 
 ```bash
