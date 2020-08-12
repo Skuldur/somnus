@@ -99,7 +99,7 @@ somnus preprocess
 
 The command to preprocess the augmented audio files. It takes the files stored in the augmented audio directory, normalizes them and stores the output array in the preprocessed data directory.
 
-##### Arguments
+**Arguments**
 * **filters**: The number of filters in each frame  
 * **show_progress**: Boolean option to decide whether to show a progress bar  
 * **split**: The split between train, validation, and test data. The total should add up to 1. E.g. `(0.9, 0.05, 0.05)`  
@@ -114,7 +114,7 @@ somnus train
 
 The command to train a small-footprint keyword model loads the data in `./preprocessed_data/` and uses it to train the keyword model.
 
-##### Arguments
+**Arguments**
 * **model_name**: The name of the model we want to train  
 * **epochs**: The number of epochs  
 * **weights_file**: The name of the file the final weights should be saved to  
@@ -130,7 +130,7 @@ somnus test
 
 The command to test a trained model on a witheld test dataset.
 
-##### Arguments
+**Arguments**
 * **model_name**: The name of the model we want to test  
 * **weights_file**: The path to the weights file  
 
