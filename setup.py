@@ -14,13 +14,13 @@ setuptools.setup(
     url="https://github.com/Skuldur/somnus",
     packages=setuptools.find_packages(exclude=("tests",)),
     install_requires=[
-        "numpy==1.16.2",
-        "pydub==0.23.1",
-        "pyaudio==0.2.11",
-        "librosa==0.8.0",
-        "tensorflow==2.2.0",
-        "fire==0.3.1",
-        "tqdm==4.47.0"
+        "numpy>=1.16.2",
+        "pydub>=0.23.1",
+        "pyaudio>=0.2.11",
+        "librosa>=0.8.0",
+        "tensorflow>=2.2.0",
+        "fire>=0.3.1",
+        "tqdm>=4.47.0"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

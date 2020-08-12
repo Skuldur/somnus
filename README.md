@@ -28,8 +28,7 @@ Somnus can be used to listen for an instance of a selected keyword in a continuo
 
 Somnus can handle all the audio interfacing for you so that you only need to initialize Somnus and and call the `listen()` and it will start listening to your microphone until it detects the keyword. Somnus also offers a nonblocking method (`detect_keyword()`) that allows the user to process the audio themselves and only use Somnus to detect a keyword in an audio time series passed to `detect_keyword()` as an argument.
 
-Somnus has the following parameters:
-
+##### Parameters
 * **keyword_file_path**: The relative or absolute path to a weights file for the keyword model.
 * **model (default: 'cnn-one-stride')**: The name of the model you wish to use.
 * **device_index (default: 0)**: The device index of the microphone that Somnus should listen to.
@@ -84,9 +83,8 @@ somnus augment_audio
 ```
 
 The command to generate an audio dataset takes the raw audio in your raw audio directory as input and generates positive, negative, and silent audio files with varying amounts of background noise. These audio files are written to the augmented audio directory.
-
-The command has the following options: 
-
+ 
+##### Arguments
 **--duration**: The duration of the audio clips in seconds  
 **--positive**: The number of positive examples  
 **--negative**: The number of negative examples  
@@ -99,8 +97,7 @@ somnus preprocess
 
 The command to preprocess the augmented audio files. It takes the files stored in the augmented audio directory, normalizes them and stores the output array in the preprocessed data directory.
 
-The command has the following options: 
-
+##### Arguments
 **--filters**: The number of filters in each frame  
 **--show_progress**: Boolean option to decide whether to show a progress bar  
 **--split**: The split between train, validation, and test data. The total should add up to 1. E.g. `(0.9, 0.05, 0.05)`  
@@ -115,8 +112,7 @@ somnus train
 
 The command to train a small-footprint keyword model loads the data in `./preprocessed_data/` and uses it to train the keyword model.
 
-The command has the following options:
-
+##### Arguments
 **--model_name**: The name of the model we want to train  
 **--epochs**: The number of epochs  
 **--weights_file**: The name of the file the final weights should be saved to  
@@ -132,8 +128,7 @@ somnus test
 
 The command to test a trained model on a witheld test dataset.
 
-The command has the following options:
-
+##### Arguments
 **--model_name**: The name of the model we want to test  
 **--weights_file**: The path to the weights file  
 
