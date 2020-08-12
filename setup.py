@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="somnus",
-    version="0.1.0",
+    version="0.1.2",
     author="Sigurður Skúli Sigurgeirsson",
     author_email="siggiskuli@gmail.com",
     description="Somnus allows you to listen for and detect a specific keyword in a continuous stream of audio data.",
@@ -17,7 +17,7 @@ setuptools.setup(
         "numpy==1.16.2",
         "pydub==0.23.1",
         "pyaudio==0.2.11",
-        "librosa==0.7.2",
+        "librosa==0.8.0",
         "tensorflow==2.2.0",
         "fire==0.3.1",
         "tqdm==4.47.0"
