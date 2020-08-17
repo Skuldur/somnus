@@ -16,7 +16,7 @@ Somnus offers easy keyword detection for everyone. It allows you to listen for a
 sudo apt-get install portaudio19-dev python-pyaudio python3-pyaudio
 ```
 
-### Windows 10
+#### Windows 10
 
 You need to install Microsoft C++ Build Tools before you can install Somnus.
 
