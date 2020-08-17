@@ -1,6 +1,6 @@
 import numpy as np
 from tensorflow.keras.layers import Dense, GRU, Bidirectional, Input, Dropout, MaxPooling2D, Conv2D, Flatten, TimeDistributed
-from tensorflow.keras.models import Model
+from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
 from tensorflow.keras import losses
@@ -47,10 +47,10 @@ class BaseModel():
         return p.reshape(-1)
 
     def save(self, name):
-        self.model.save_weights(name)
+        self.model.save(name)
 
     def load(self, weights_path):
-        self.model.load_weights(weights_path)
+        self.model = load_model(weights_path)
 
 
 class CnnTradFPool(BaseModel):
@@ -114,8 +114,8 @@ class CrnnTimeStride(BaseModel):
         X_input = Input(shape = input_shape)
 
         conv1 = Conv2D(32, kernel_size=(20, 5), strides=(8,2), padding='same', activation='relu')(X_input)
-        bigru1 = TimeDistributed(Bidirectional(GRU(units=32, return_sequences=True)))(conv1)
-        bigru2 = TimeDistributed(Bidirectional(GRU(units=32)))(bigru1)
+        bigru1 = TimeDistributed(Bidirectional(GRU(units=32, return_sequences=True, unroll=True)))(conv1)
+        bigru2 = TimeDistributed(Bidirectional(GRU(units=32, unroll=True)))(bigru1)
         flatten = Flatten()(bigru2)
         dense1 = Dense(64, activation='relu')(flatten)
         output = Dense(3, activation='softmax')(dense1)

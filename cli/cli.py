@@ -13,6 +13,7 @@ import pyaudio
 
 from somnus.utils import load_raw_audio, create_positive_example, create_negative_example, create_silent_example
 
+
 CONFIG_ERROR_MSGS = {
     'raw_audio': 'Raw Audio Directory is not set. ',
     'augmented_audio': 'Augmented Audio Directory is not set. ',
@@ -173,14 +174,14 @@ class SomnusCLI(metaclass=ConfigWrapper):
         print("\nUse the following config as the audio_config parameter in Somnus when using models trained with this dataset: \n\n%s" 
             % json.dumps(audio_config, indent=2, sort_keys=True))
 
-    def train(self, model_name='cnn-one-stride',  epochs=200, weights_file='model_weights.hdf5',
+    def train(self, model_name='cnn-one-stride',  epochs=200, output='saved_model.h5',
                 save_best=False, batch_size=64, lr=0.0001):
         """
         Trains a small-footprint keyword detection model using augmented WAV files
 
         :param model_name: The name of the model we want to train
         :param epochs: The number of epochs
-        :param weights_file: The name of the file the final weights should be saved to
+        :param output: The name of the file the final model should be saved to
         :param save_best: Whether or not the model should save the best model throughout the training process
         :param batch_size: The size of each mini batch
         :param lr: The initial learning rate
@@ -198,25 +199,26 @@ class SomnusCLI(metaclass=ConfigWrapper):
         model = get_model(model_name, shape)
         model.compile(lr)
         model.train(train_data, train_labels, val_data, val_labels, epochs, save_best, batch_size)
-        model.save(weights_file)
+        model.save(output)
 
-    def test(self, model_name='cnn-one-stride', weights='model_weights.hdf5'):
+    def test(self, model='saved_model.h5'):
         """
         Tests a trained model against a test dataset
 
-        :param model_name: The name of the model we want to test
-        :param weights: The path to the weights file
+        :param model: The file containing the model we want to test
         """
-        from somnus.models import get_model
+        from somnus.models import BaseModel
+
+        model_path = model
 
         preprocessed_path = self.config['preprocessed_data']
 
         data = np.load(os.path.join(preprocessed_path, 'test_data.npy'))
         labels = np.load(os.path.join(preprocessed_path, 'test_labels.npy'))
 
-        model = get_model(model_name, data[0].shape)
+        model = BaseModel()
 
-        model.load(weights)
+        model.load(model_path)
 
         wrong = 0
         for idx in tqdm(range(len(data))):
@@ -250,6 +252,73 @@ class SomnusCLI(metaclass=ConfigWrapper):
             print("Deleting files from %s:" % path)
             for f in tqdm(filelist):
                 os.remove(os.path.join(path, f))
+
+    def quantize_model(self, model='saved_model.h5', output='saved_model.tflite', quantization='cpu'):
+        """
+        Converts the model to TFLite and quantizes it. This reduces the size of the model by a factor of 2-3, 
+        while barely affecting the accuracy of the model
+
+        :param model: The file containing the model we want to convert
+        :param output: The file that the TFLite model will be written to
+        :param quantization: The hardware that the model should be optimized for (CPU, GPU)
+        """
+        import tensorflow as tf
+        from somnus.models import BaseModel
+
+        model_path = model
+        model = BaseModel()
+        model.load(model_path)
+
+        converter = tf.lite.TFLiteConverter.from_keras_model(model.model)
+        
+        # quantize the model. This reduces the size of the model significantly while reducing accuracy
+        # only slightly
+        quantization = quantization.lower()
+        if quantization == 'cpu':
+            converter.optimizations = [tf.lite.Optimize.DEFAULT]
+        elif quantization == 'gpu':
+            converter.optimizations = [tf.lite.Optimize.DEFAULT]
+            converter.target_spec.supported_types = [tf.float16]
+        
+        tflite_model = converter.convert()
+
+        open(output, "wb").write(tflite_model)
+
+    def test_quantized_model(self, quantized_model='saved_model.tflite'):
+        """
+        Tests a trained model against a test dataset
+
+        :param quantized_model: The file containing the quantized model we want to test
+        """
+        import tensorflow as tf
+
+
+        interpreter = tf.lite.Interpreter(model_path=quantized_model)
+        interpreter.allocate_tensors()
+
+        preprocessed_path = self.config['preprocessed_data']
+
+        data = np.load(os.path.join(preprocessed_path, 'test_data.npy'))
+        labels = np.load(os.path.join(preprocessed_path, 'test_labels.npy'))
+
+        wrong = 0
+        for idx in tqdm(range(len(data))):
+            audio = data[idx]
+            label = labels[idx]
+
+            input_index = interpreter.get_input_details()[0]["index"]
+            output_index = interpreter.get_output_details()[0]["index"]
+
+            interpreter.set_tensor(input_index, np.expand_dims(audio, axis=0).astype(np.float32))
+            interpreter.invoke()
+            p = interpreter.get_tensor(output_index)
+
+            if np.argmax(p) != np.argmax(label):
+                wrong += 1
+
+        percentage = 100*((len(data)-wrong) / len(data))
+        print("\n Test dataset accuracy is %s percent" % percentage)
+
 
 def main():
     fire.Fire(SomnusCLI)

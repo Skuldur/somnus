@@ -7,15 +7,14 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
 import pyaudio
 
-from somnus.models import get_model
-from somnus.preprocess_audio import melnormalize
+from models import BaseModel
+from preprocess_audio import melnormalize
 
 
 class Somnus():
     """
     Args:
-        keyword_file_path (string): The relative or absolute path to a weights file for the keyword model.
-        model (string): The name of the model you wish to use.
+        model (string): The file containing the trained model
         device_index (int): The device index of the microphone that Somnus should listen to.
         threshold (float): A threshold for how confident Somnus has to be for it to detect the keyword (between [0,1])
         data_shape (tuple): The input shape for the keyword model
@@ -26,23 +25,17 @@ class Somnus():
     """
     def __init__(
             self, 
-            keyword_file_path='',
-            model=None,
-            model_name='cnn-one-stride',
+            model='',
             device_index=0, 
-            threshold=0.5, 
+            threshold=0.8, 
             audio_config=None
         ):
 
         if not audio_config:
             audio_config = self._get_default_config()
 
-        if model:
-            self.model = model
-        else:
-            self.model = get_model(model_name, audio_config['data_shape'])
-            self.model.load(keyword_file_path)
-
+        self.model = BaseModel()
+        self.model.load(model)
 
         self.chunk_duration = 0.1 # Each read length in seconds from mic.
         self.fs = 16000 # sampling rate for mic
