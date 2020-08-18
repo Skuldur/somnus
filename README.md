@@ -74,7 +74,7 @@ Somnus can handle all the audio interfacing for you so that you only need to ini
 
 ## CLI
 
-[The Somnus CLI Documentation](cli/README.md)
+[The Somnus CLI Documentation](https://github.com/Skuldur/somnus/blob/master/cli/README.md)
 
 ## Models
 
