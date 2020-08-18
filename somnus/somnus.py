@@ -7,8 +7,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
 import pyaudio
 
-from models import BaseModel
-from preprocess_audio import melnormalize
+from somnus.models import BaseModel
+from somnus.preprocess_audio import melnormalize
 
 
 class Somnus():
