@@ -62,8 +62,7 @@ Somnus can be used to listen for an instance of a selected keyword in a continuo
 Somnus can handle all the audio interfacing for you so that you only need to initialize Somnus and and call the `listen()` and it will start listening to your microphone until it detects the keyword. Somnus also offers a nonblocking method (`detect_keyword()`) that allows the user to process the audio themselves and only use Somnus to detect a keyword in an audio time series passed to `detect_keyword()` as an argument.
 
 **Parameters**
-* **keyword_file_path**: The relative or absolute path to a weights file for the keyword model.
-* **model (default: 'cnn-one-stride')**: The name of the model you wish to use.
+* **model (default: '')**: The relative or absolute path to a Keras model file for the keyword model.
 * **device_index (default: 0)**: The device index of the microphone that Somnus should listen to.
 * **threshold (default: 0.5)**: A threshold for how confident Somnus has to be for it to detect the keyword
 * **audio_config**: A dictionary containing the configuration specific to the audio time series. It contains the following:
