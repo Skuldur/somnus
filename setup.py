@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="somnus",
-    version="0.2.1",
+    version="0.2.2",
     author="Sigurður Skúli Sigurgeirsson",
     author_email="siggiskuli@gmail.com",
     description="Somnus is keyword detection made easy.",
